@@ -21,6 +21,6 @@ urlpatterns = [
 
     path('notes/assignment/<int:pk>/employee/', NotesEmployeeAPIView.as_view()),
 
-    path('notes/employer/<int:pk>/', NotesEmployerView.as_view),
+    path('notes/employer/<int:pk>/', NotesEmployerView.as_view()),
   
 ]

@@ -76,8 +76,19 @@ class NotesSerializer(serializers.ModelSerializer):
             'job_assignment_id',
             'description',
             'created_at',
-            'owner',
-            'job'
+            'owner'
+        )
+
+class NotesSerializerEmployer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='user_id.username')
+    class Meta:
+        model = notes
+        fields = (
+            'id',
+            'job_id',
+            'description',
+            'created_at',
+            'owner'
         )
 
 

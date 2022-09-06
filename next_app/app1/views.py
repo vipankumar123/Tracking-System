@@ -115,6 +115,13 @@ class JobassignmentAPIView(APIView):
 
     def post(self, request, pk):
         data = request.data
+
+        # matching the job_id and current user.
+        try:
+            jobss = jobs.objects.get(user_id = self.request.user, id=pk)
+        except:
+            return Response({"msg": "Job id not found!!"})
+
         print(data)
         print(pk)
         # job_assignment_obj = jobassignment.objects.filter(job_id = pk, assigned_to = data['assigned_to'], owner = self.request.user)
@@ -162,9 +169,9 @@ class NotesEmployeeAPIView(APIView):
         
         data = request.data
         print(data)
-        data._mutable = True
+        # data._mutable = True
         data['job_assignment_id']=pk
-        data.mutable = False
+        # data.mutable = False
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save(owner=request.user)
@@ -189,13 +196,12 @@ class NotesEmployeeAPIView(APIView):
         )
 
 class NotesEmployerView(generics.CreateAPIView):
-    serializer_class = NotesSerializer
+    serializer_class = NotesSerializerEmployer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     authentication_classes = [JWTAuthentication]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
-        
 
 
 
