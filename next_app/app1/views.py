@@ -195,13 +195,43 @@ class NotesEmployeeAPIView(APIView):
             }
         )
 
-class NotesEmployerView(generics.CreateAPIView):
+# class NotesEmployerView(generics.CreateAPIView):
+#     serializer_class = NotesSerializerEmployer
+#     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+#     authentication_classes = [JWTAuthentication]
+
+#     def perform_create(self, serializer):
+#         serializer.save(owner=self.request.user)
+
+# class UpdateNotesEmployerView(generics.UpdateAPIView):
+#     serializer_class = NotesSerializerEmployer
+#     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+#     authentication_classes = [JWTAuthentication]
+
+#     def perform_create(self, serializer):
+#         serializer.save(owner=self.request.user)
+
+class NotesEmployerAPIView(APIView):
     serializer_class = NotesSerializerEmployer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     authentication_classes = [JWTAuthentication]
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+    def post(self, request, pk):
+        try:
+            assignment = jobs.objects.get(id=pk, user_id=request.user.id)
+            print(assignment)
+        except:
+            return Response({'error': 'This job is not available!'}, status.HTTP_400_BAD_REQUEST)
+        
+        data = request.data
+        print(data)
+        # data._mutable = True
+        data.job_id=pk
+        # data.mutable = False
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(owner=request.user)
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
 
 
