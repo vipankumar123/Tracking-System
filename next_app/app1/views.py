@@ -9,6 +9,7 @@ from rest_framework import generics
 from app1.permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 # Create your views here.
@@ -33,13 +34,16 @@ class UserCertificateListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
     queryset = usercertificate.objects.all()
     serializer_class = UserCertificateSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user_id']
+
 
     def perform_create(self, serializer):
         serializer.save(user_id=self.request.user)
 
-    def get_queryset(self):
-        queryset = usercertificate.objects.filter(user_id = self.request.user)
-        return queryset
+    # def get_queryset(self):
+    #     queryset = usercertificate.objects.filter(user_id = self.request.user)
+    #     return queryset
 
 class UserCertificatetDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -238,5 +242,11 @@ class NotesEmployerAPIView(APIView):
 
 
 
+class JobListNew(generics.ListAPIView):
+    queryset = jobs.objects.all()
+    serializer_class = JobsSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['jobtype', 'name']
 
 

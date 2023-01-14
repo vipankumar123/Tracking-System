@@ -22,5 +22,7 @@ urlpatterns = [
     path('notes/assignment/<int:pk>/employee/', NotesEmployeeAPIView.as_view()),
 
     path('notes/employer/<int:pk>/', NotesEmployerAPIView.as_view()),
+
+    path('oky/', JobListNew.as_view(), name="oky")
   
 ]
